@@ -1,0 +1,37 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "User (Farmer/Expert)" as User
+
+package "Wheat Disease Detection System" {
+    usecase "Register Account" as UC1
+    usecase "Login" as UC2
+    usecase "Upload Leaf Image" as UC3
+    usecase "View Analysis Report" as UC4
+    usecase "View History" as UC5
+    usecase "Logout" as UC6
+    
+    usecase "Validate File" as UC7
+    usecase "Predict Disease (model)" as UC8
+    usecase "Estimate Severity" as UC9
+    usecase "Get Recommendations" as UC10
+    usecase "Save to Database" as UC11
+}
+
+' User Interactions
+User --> UC1
+User --> UC2
+User --> UC3
+User --> UC5
+User --> UC6
+
+' System Integrations & Includes
+UC3 ..> UC4 : <<triggers>>
+UC3 ..> UC7 : <<include>>
+UC3 ..> UC8 : <<include>>
+UC8 ..> UC9 : <<include>>
+UC8 ..> UC10 : <<include>>
+UC8 ..> UC11 : <<include>>
+
+@enduml

@@ -1,0 +1,9 @@
+d:/WDD/dataset/test/Crown and Root Rot\00071.jpg - Argmax: 1 - [1.3739041e-04 6.6072083e-01 3.1273618e-02 3.0782327e-01 4.4935194e-05]
+d:/WDD/dataset/test/Crown and Root Rot\00291.jpg - Argmax: 1 - [2.4660773e-08 8.3884227e-01 5.7752766e-03 1.5536807e-01 1.4334264e-05]
+d:/WDD/dataset/test/Healthy Wheat\00051.jpg - Argmax: 2 - [3.5878315e-08 9.6189547e-03 9.5380670e-01 3.6574133e-02 1.7580075e-07]
+d:/WDD/dataset/test/Healthy Wheat\00131.jpg - Argmax: 1 - [8.9238284e-07 5.1583177e-01 1.3743470e-03 4.8279300e-01 2.1321091e-08]
+d:/WDD/dataset/test/Leaf Rust\00131.jpg - Argmax: 2 - [4.25109789e-07 1.12917915e-01 8.60779762e-01 2.62976978e-02
+ 4.15877457e-06]
+d:/WDD/dataset/test/Leaf Rust\00341.jpg - Argmax: 3 - [1.3957932e-05 1.0113934e-01 4.7944952e-02 8.5089320e-01 8.5671954e-06]
+d:/WDD/dataset/test/Wheat Loose Smut\0031.jpg - Argmax: 3 - [8.0735726e-06 2.8849093e-03 2.7873434e-04 9.9682826e-01 3.1398805e-08]
+d:/WDD/dataset/test/Wheat Loose Smut\0051.jpg - Argmax: 1 - [1.9265542e-06 8.6513835e-01 6.9497019e-04 1.3416474e-01 2.3581213e-08]

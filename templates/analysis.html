@@ -1,0 +1,430 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis - Wheat Disease Detection{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-body">
+        <h4 class="card-title mb-3">
+            <i class="bi bi-cloud-arrow-up"></i> Upload Wheat Image
+        </h4>
+
+        <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+            <div class="mb-3">
+                <i class="bi bi-images" style="font-size: 60px; color: var(--primary-color);"></i>
+            </div>
+            <h5>Click to upload or drag & drop</h5>
+            <p class="text-muted">Supported formats: JPG, PNG, JPEG, GIF</p>
+            <button type="button" class="btn btn-primary mt-3" onclick="event.stopPropagation(); document.getElementById('fileInput').click();">
+                <i class="bi bi-upload"></i> Select Image
+            </button>
+            <button type="button" class="btn btn-outline-primary mt-3 ms-2" onclick="event.stopPropagation(); startLiveCamera();">
+                <i class="bi bi-camera"></i> Live Camera
+            </button>
+        </div>
+
+        <!-- LIVE CAMERA MODULE (Hidden By Default) -->
+        <div class="card" id="cameraCard" style="display: none; text-align: center; margin-top: 20px;">
+            <div class="card-body">
+                <h5><i class="bi bi-camera-video"></i> Live Camera</h5>
+                <p class="text-muted small">Position the wheat leaf within the frame</p>
+                <div style="position: relative; margin: 15px auto; width: 100%; max-width: 400px; background: #000; border-radius: 8px; overflow: hidden; aspect-ratio: 3/4;">
+                    <video id="cameraVideo" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+                </div>
+                <canvas id="cameraCanvas" style="display: none;"></canvas>
+                <div class="mt-3">
+                    <button class="btn btn-outline-secondary me-2" onclick="closeLiveCamera()">Cancel</button>
+                    <button class="btn btn-primary" onclick="captureLivePhoto()"><i class="bi bi-camera"></i> Snap Photo</button>
+                </div>
+            </div>
+        </div>
+
+        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display: none;">
+
+        <div class="mt-3 text-center">
+            <button class="btn btn-success btn-lg" onclick="predictDisease()" id="predictBtn" disabled>
+                <i class="bi bi-search"></i> Analyze Image
+            </button>
+            <button class="btn btn-outline-secondary btn-lg" onclick="clearFile()">
+                <i class="bi bi-x-circle"></i> Clear
+            </button>
+        </div>
+
+        <div id="fileInfo" class="mt-3"></div>
+    </div>
+</div>
+
+<!-- Results Section -->
+<div class="card prediction-result" id="resultsSection">
+    <div class="card-header bg-success text-white">
+        <h4 class="mb-0"><i class="bi bi-clipboard-data"></i> Analysis Results</h4>
+    </div>
+    <div class="card-body">
+        <!-- Image Display -->
+        <div class="text-center mb-4">
+            <h5><i class="bi bi-image"></i> Uploaded Image</h5>
+            <img id="uploadedImage" src="" alt="Uploaded Image" class="img-fluid rounded" style="max-height: 300px;">
+            <div class="mt-2">
+                <small class="text-muted" id="fileName"></small>
+            </div>
+        </div>
+
+        <!-- Prediction Results -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card disease-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0" id="diseaseName">Diagnosis</h5>
+                            <span class="badge bg-success fs-6" id="confidenceBadge">0%</span>
+                        </div>
+
+                        <div class="alert" id="statusAlert">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <div>
+                                    <strong id="statusTitle">Status</strong>
+                                    <p class="mb-0" id="statusText"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="mt-3"><i class="bi bi-speedometer2"></i> Disease Spread</h6>
+                        <p class="spread-indicator mb-2">
+                            Estimated: <span id="spreadValue">0%</span>
+                        </p>
+                        <div class="progress mb-3">
+                            <div id="spreadBar" class="progress-bar" style="width: 0%"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6><i class="bi bi-activity"></i> Severity</h6>
+                                <span class="severity-badge" id="severityBadge">Healthy</span>
+                            </div>
+                            <div>
+                                <h6><i class="bi bi-lightning"></i> Action</h6>
+                                <span class="badge" id="actionBadge">Monitor</span>
+                            </div>
+                        </div>
+
+                        <p class="card-text mt-3" id="diseaseDescription"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Treatment -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="bi bi-prescription2"></i> Treatment Plan</h5>
+
+                        <h6 class="mt-3"><i class="bi bi-exclamation-triangle"></i> Symptoms</h6>
+                        <ul id="symptomsList" class="symptom-list"></ul>
+
+                        <h6 class="mt-3"><i class="bi bi-capsule"></i> Recommended Medicine</h6>
+                        <ul id="medicineList" class="medicine-list"></ul>
+
+                        <h6 class="mt-3"><i class="bi bi-shield-check"></i> Prevention</h6>
+                        <p id="preventionText" class="card-text"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Probabilities -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Detailed Analysis</h5>
+            </div>
+            <div class="card-body">
+                <div id="probabilityChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let currentFile = null;
+
+    // File upload handling
+    document.getElementById('fileInput').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            processFile(file);
+        }
+    });
+
+        let cameraStream = null;
+        async function startLiveCamera() {
+            document.getElementById('uploadArea').style.display = 'none';
+            document.getElementById('cameraCard').style.display = 'block';
+            const video = document.getElementById('cameraVideo');
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                video.srcObject = cameraStream;
+            } catch (err) {
+                alert("Could not access camera: " + err.message);
+                closeLiveCamera();
+            }
+        }
+
+        function closeLiveCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            document.getElementById('cameraCard').style.display = 'none';
+            document.getElementById('uploadArea').style.display = 'block';
+        }
+
+        function captureLivePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+            if (!cameraStream) return;
+            
+            const rawW = video.videoWidth;
+            const rawH = video.videoHeight;
+            const targetRatio = 3 / 4;
+            let cropW = rawW;
+            let cropH = rawH;
+            let offX = 0;
+            let offY = 0;
+            
+            if (rawW / rawH > targetRatio) {
+                cropW = rawH * targetRatio;
+                offX = (rawW - cropW) / 2;
+            } else {
+                cropH = rawW / targetRatio;
+                offY = (rawH - cropH) / 2;
+            }
+            
+            canvas.width = cropW;
+            canvas.height = cropH;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, offX, offY, cropW, cropH, 0, 0, cropW, cropH);
+            
+            canvas.toBlob(blob => {
+                const file = new File([blob], "camera_capture.jpg", { type: "image/jpeg" });
+                closeLiveCamera();
+                processFile(file);
+            }, 'image/jpeg', 0.9);
+        }
+
+    document.getElementById('cameraInput').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            processFile(file);
+        }
+    });
+
+    // Drag and drop
+    const uploadArea = document.getElementById('uploadArea');
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.backgroundColor = 'rgba(44, 120, 115, 0.1)';
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.backgroundColor = 'rgba(44, 120, 115, 0.05)';
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.style.backgroundColor = 'rgba(44, 120, 115, 0.05)';
+
+        if (e.dataTransfer.files.length > 0) {
+            processFile(e.dataTransfer.files[0]);
+        }
+    });
+
+    function processFile(file) {
+        currentFile = file;
+        document.getElementById('predictBtn').disabled = false;
+        previewImage(file);
+        showFileInfo(file);
+    }
+
+    function previewImage(file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('uploadedImage').src = e.target.result;
+            document.getElementById('fileName').textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function showFileInfo(file) {
+        const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+        document.getElementById('fileInfo').innerHTML = `
+            <div class="alert alert-info">
+                <i class="bi bi-file-image"></i> 
+                <strong>${file.name}</strong> (${sizeInMB} MB)
+            </div>
+        `;
+    }
+
+    function clearFile() {
+        currentFile = null;
+        document.getElementById('fileInput').value = '';
+        if (document.getElementById('cameraInput')) document.getElementById('cameraInput').value = '';
+        document.getElementById('predictBtn').disabled = true;
+        document.getElementById('uploadedImage').src = '';
+        document.getElementById('fileName').textContent = '';
+        document.getElementById('fileInfo').innerHTML = '';
+        document.getElementById('resultsSection').style.display = 'none';
+    }
+
+    async function predictDisease() {
+        if (!currentFile) {
+            alert('Please select an image first');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', currentFile);
+
+        // Show loading
+        const predictBtn = document.getElementById('predictBtn');
+        predictBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Analyzing...';
+        predictBtn.disabled = true;
+
+        try {
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                displayResults(result);
+            } else {
+                throw new Error(result.error || 'Prediction failed');
+            }
+
+        } catch (error) {
+            console.error('Prediction error:', error);
+            alert('Error: ' + error.message);
+        } finally {
+            // Reset button
+            predictBtn.innerHTML = '<i class="bi bi-search"></i> Analyze Image';
+            predictBtn.disabled = false;
+        }
+    }
+
+    function displayResults(result) {
+        try {
+            const pred = result.prediction;
+            const diseaseInfo = pred.disease_info || {};
+            const isHealthy = pred.class.includes('Healthy') || pred.class === 'Healthy Wheat';
+
+            // Update elements
+            document.getElementById('diseaseName').textContent = pred.class;
+            document.getElementById('confidenceBadge').textContent = pred.confidence;
+            document.getElementById('diseaseDescription').textContent = diseaseInfo.description || 'No description';
+            document.getElementById('preventionText').textContent = diseaseInfo.prevention || 'Regular monitoring';
+
+            // Update status
+            const statusAlert = document.getElementById('statusAlert');
+            if (isHealthy) {
+                statusAlert.className = 'alert alert-success';
+                document.getElementById('statusTitle').textContent = 'Healthy Plant';
+                document.getElementById('statusText').textContent = 'No disease detected';
+            } else {
+                statusAlert.className = 'alert alert-danger';
+                document.getElementById('statusTitle').textContent = 'Disease Detected';
+                document.getElementById('statusText').textContent = pred.severity_description || 'Treatment needed';
+            }
+
+            // Update spread
+            const spread = pred.spread_value || 0;
+            document.getElementById('spreadValue').textContent = pred.spread;
+            const spreadBar = document.getElementById('spreadBar');
+            spreadBar.style.width = spread + '%';
+            spreadBar.className = spread < 20 ? 'progress-bar bg-success' :
+                spread < 50 ? 'progress-bar bg-warning' : 'progress-bar bg-danger';
+
+            // Update severity
+            const severityBadge = document.getElementById('severityBadge');
+            severityBadge.textContent = pred.severity_level;
+            severityBadge.className = 'severity-badge ' +
+                (pred.severity_level === 'Healthy' ? 'bg-success' :
+                    pred.severity_level === 'Low' ? 'bg-success' :
+                        pred.severity_level === 'Medium' ? 'bg-warning' :
+                            pred.severity_level === 'High' ? 'bg-danger' : 'bg-secondary');
+
+            // Update action
+            const actionBadge = document.getElementById('actionBadge');
+            if (isHealthy) {
+                actionBadge.textContent = 'Monitor';
+                actionBadge.className = 'badge bg-success';
+            } else if (spread < 30) {
+                actionBadge.textContent = 'Treat';
+                actionBadge.className = 'badge bg-warning';
+            } else {
+                actionBadge.textContent = 'Urgent';
+                actionBadge.className = 'badge bg-danger';
+            }
+
+            // Update symptoms
+            const symptomsList = document.getElementById('symptomsList');
+            symptomsList.innerHTML = '';
+            if (diseaseInfo.symptoms) {
+                diseaseInfo.symptoms.forEach(symptom => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<i class="bi bi-dot"></i> ${symptom}`;
+                    symptomsList.appendChild(li);
+                });
+            }
+
+            // Update medicine
+            const medicineList = document.getElementById('medicineList');
+            medicineList.innerHTML = '';
+            if (diseaseInfo.medicine) {
+                diseaseInfo.medicine.forEach(med => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<i class="bi bi-check-circle"></i> ${med}`;
+                    medicineList.appendChild(li);
+                });
+            }
+
+            // Update image
+            if (result.image) {
+                document.getElementById('uploadedImage').src = 'data:image/jpeg;base64,' + result.image;
+            }
+
+            // Update probabilities
+            const probChart = document.getElementById('probabilityChart');
+            probChart.innerHTML = '';
+            for (const [disease, prob] of Object.entries(pred.all_probabilities)) {
+                const isCurrent = disease === pred.class;
+                const div = document.createElement('div');
+                div.className = 'probability-item';
+                div.innerHTML = `
+                    <div class="d-flex justify-content-between">
+                        <span>${disease}</span>
+                        <span>${prob.toFixed(1)}%</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar ${isCurrent ? 'bg-primary' : 'bg-secondary'}" 
+                             style="width: ${prob}%"></div>
+                    </div>
+                `;
+                probChart.appendChild(div);
+            }
+
+            // Show results
+            document.getElementById('resultsSection').style.display = 'block';
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+
+        } catch (error) {
+            console.error('Error displaying results:', error);
+            alert('Error displaying results');
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Wheat Disease Detection{% endblock %}
+
+{% block content %}
+<div class="welcome-card">
+    <h1 class="display-5">Welcome back, {{ username }}!</h1>
+    <p class="lead">AI-powered wheat disease detection system to help you identify and manage wheat diseases effectively.</p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="stats-card">
+            <div class="stats-number">5</div>
+            <div class="stats-label">Diseases Detected</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stats-card">
+            <div class="stats-number">92%</div>
+            <div class="stats-label">Accuracy Rate</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stats-card">
+            <div class="stats-number">24/7</div>
+            <div class="stats-label">Available</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-info-circle"></i> About Wheat Diseases</h4>
+            </div>
+            <div class="card-body">
+                <p>Wheat is susceptible to various diseases that can significantly reduce yield and quality. Early detection and proper management are crucial for maintaining healthy crops.</p>
+                
+                <h5>Common Wheat Diseases:</h5>
+                <ul>
+                    <li><strong>Leaf Rust:</strong> Fungal disease causing orange-brown pustules on leaves</li>
+                    <li><strong>Yellow Rust:</strong> Stripe rust disease with yellow-orange stripes</li>
+                    <li><strong>Mildew:</strong> Powdery mildew affecting leaves and stems</li>
+                    <li><strong>Wheat Loose Smut:</strong> Fungal disease replacing grains with black spores</li>
+                </ul>
+                
+                <h5>Why Use Our System?</h5>
+                <ul>
+                    <li>Instant disease detection using AI</li>
+                    <li>Detailed treatment recommendations</li>
+                    <li>Preventive measures and management plans</li>
+                    <li>Disease severity assessment</li>
+                    <li>Prediction history tracking</li>
+                </ul>
+                
+                <div class="alert alert-info">
+                    <i class="bi bi-lightbulb"></i> 
+                    <strong>Tip:</strong> Regular monitoring and early detection can prevent up to 80% of crop losses.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-lightning"></i> Quick Actions</h4>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('analysis') }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-search"></i> Start Analysis
+                    </a>
+                    <a href="{{ url_for('history') }}" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-clock-history"></i> View History
+                    </a>
+                </div>
+                
+                <hr>
+                
+                <h5>How to Use:</h5>
+                <ol class="small">
+                    <li>Click <strong>Analysis</strong> in the navigation</li>
+                    <li>Upload clear image of wheat plant/leaf</li>
+                    <li>Get instant diagnosis and treatment plan</li>
+                    <li>View history of previous analyses</li>
+                </ol>
+                
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Note:</strong> Always consult agricultural expert for critical cases.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

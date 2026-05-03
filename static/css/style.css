@@ -1,0 +1,419 @@
+:root {
+    --primary-color: #1e4d2b; /* Deep Forest Green - Official & Professional */
+    --secondary-color: #2c7873; /* Teal Green */
+    --accent-color: #d4a017; /* Wheat Gold */
+    --background-color: #f4f7f6; /* Light Grayish Green */
+    --text-color: #333333;
+    --light-text: #ffffff;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    --border-radius: 6px;
+}
+
+body {
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--primary-color) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 0.8rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--light-text) !important;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+
+.nav-link:hover {
+    color: var(--light-text) !important;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link.active {
+    color: var(--light-text) !important;
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-bottom: none; /* Removed the underline for a cleaner button-like look */
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 40px 0;
+}
+
+.container {
+    max-width: 1100px;
+}
+
+/* Headers */
+.header-section {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 40px;
+    border-radius: var(--border-radius);
+    margin-bottom: 30px;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.header-section h1 {
+    color: white;
+    font-weight: 700;
+}
+
+/* Cards */
+.card {
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    background-color: #fff;
+    margin-bottom: 25px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    padding: 15px 20px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.card-header.bg-success, .card-header.bg-info, .card-header.bg-primary {
+    color: white;
+    border-bottom: none;
+}
+
+.card-header.bg-success { background-color: var(--primary-color) !important; }
+.card-header.bg-info { background-color: var(--secondary-color) !important; }
+
+/* Buttons */
+.btn {
+    border-radius: 4px;
+    padding: 8px 20px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #163a20;
+    border-color: #163a20;
+    transform: translateY(-1px);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-outline-secondary {
+    border-color: #ccc;
+    color: #555;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    color: #333;
+    border-color: #bbb;
+}
+
+/* Upload Area */
+.upload-area {
+    border: 2px dashed #cbd5e0;
+    border-radius: var(--border-radius);
+    padding: 60px 20px;
+    text-align: center;
+    background-color: #f8fcf9;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    background-color: #eef5f1;
+    border-color: var(--primary-color);
+}
+
+.upload-icon {
+    font-size: 64px;
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+}
+
+/* Disease Card Specifics */
+.disease-card {
+    border-left: 5px solid var(--primary-color);
+}
+
+.severity-badge {
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.symptom-list, .medicine-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.symptom-list li, .medicine-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.symptom-list li:last-child, .medicine-list li:last-child {
+    border-bottom: none;
+}
+
+.symptom-list li i, .medicine-list li i {
+    color: var(--secondary-color);
+    margin-right: 8px;
+}
+
+/* Footer */
+footer {
+    background-color: #2d3436 !important;
+    color: #dfe6e9;
+    padding: 40px 0;
+    margin-top: auto;
+    font-size: 0.9rem;
+}
+
+footer p {
+    margin-bottom: 0.5rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.prediction-result {
+    animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    display: none;
+}
+
+/* Progress Bars */
+.progress {
+    height: 10px;
+    border-radius: 5px;
+    background-color: #e9ecef;
+    margin-top: 5px;
+}
+
+.progress-bar {
+    border-radius: 5px;
+}
+
+/* Badges */
+.badge {
+    padding: 0.5em 0.8em;
+    font-weight: 600;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #bdc3c7;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+/* Analysis Page Specifics */
+.analysis-bg {
+    background: linear-gradient(rgba(30, 77, 43, 0.9), rgba(30, 77, 43, 0.8)), 
+                url('../vinu.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.analysis-bg h2 {
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.analysis-bg .text-muted-header {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.analysis-bg .card {
+    background-color: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+
+/* Home Page Cards */
+.welcome-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-radius: var(--border-radius);
+    padding: 40px;
+    margin-bottom: 30px;
+    box-shadow: var(--card-shadow);
+}
+
+.welcome-card h1 {
+    color: white;
+    font-weight: 700;
+}
+
+.stats-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 25px;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+}
+
+.stats-number {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+    line-height: 1.2;
+}
+
+.stats-label {
+    font-size: 1rem;
+    color: #666;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Table Styles */
+.table {
+    background-color: white;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+}
+
+.table thead {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(30, 77, 43, 0.05);
+}
+
+
+/* Auth Pages (Login/Register) */
+.auth-body {
+    background: linear-gradient(rgba(30, 77, 43, 0.85), rgba(30, 77, 43, 0.85)), 
+                url('../vinay.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: var(--border-radius);
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    border-top: 5px solid var(--primary-color);
+}
+
+.auth-container {
+    width: 100%;
+    padding: 15px;
+}
+
+.login-container { max-width: 450px; }
+.register-container { max-width: 550px; }
+
+.auth-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-logo i {
+    font-size: 3.5rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    display: inline-block;
+}
+
+.auth-logo h2 {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+
+
+/* Utility Overrides */
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.bg-success {
+    background-color: var(--success-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+

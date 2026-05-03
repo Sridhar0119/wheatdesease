@@ -1,0 +1,53 @@
+@startuml
+!theme plain
+title Data Flow Diagram (Level 1) - Wheat Disease Detection System
+
+' Define shapes for DFD
+skinparam rectangle<<entity>> {
+    BackgroundColor LightBlue
+    BorderColor Black
+}
+
+skinparam rectangle<<process>> {
+    BackgroundColor LightYellow
+    BorderColor Black
+    RoundCorner 15
+}
+
+skinparam database<<datastore>> {
+    BackgroundColor White
+    BorderColor Black
+}
+
+' External Entities
+rectangle "User (Farmer/Expert)" as User <<entity>>
+
+' Processes
+rectangle "1.0 Manage Authentication" as P1 <<process>>
+rectangle "2.0 Analyze Leaf Image" as P2 <<process>>
+rectangle "3.0 Manage specific Disease Info" as P3 <<process>>
+rectangle "4.0 View History" as P4 <<process>>
+
+' Data Stores
+database "D1: Users" as D1 <<datastore>>
+database "D2: Predictions" as D2 <<datastore>>
+database "D3: Disease Knowledge Base" as D3 <<datastore>>
+
+' Data Flows
+User --> P1 : Credentials (Login/Register)
+P1 --> User : Auth Token / Session
+P1 <--> D1 : Validates/Stores User Data
+
+User --> P2 : Upload Leaf Image
+P2 --> D3 : Fetch Disease Details
+P2 --> D2 : Store Prediction Result
+P2 --> User : Analysis Report (Diagnosis, Meds)
+
+P2 ..> P3 : (Internal Logic Lookup)
+D3 --> P2 : Returns Severity & Advice rules
+
+User --> P4 : Request Past Reports
+P4 <--> D2 : Fetch User's History
+P4 --> User : List of Previous Diagnoses
+
+@enduml

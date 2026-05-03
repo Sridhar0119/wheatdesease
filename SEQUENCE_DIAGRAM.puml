@@ -1,0 +1,83 @@
+@startuml
+autonumber
+skinparam style strictuml
+
+actor User
+participant "Web Interface" as Frontend
+participant "Flask Controller" as App
+participant "SQLite Database" as DB
+participant "AI Model (ResNet+EffNet)" as Model
+
+note over User, Model: Authentication Phase
+
+User -> Frontend: Access Login Page
+Frontend -> App: GET /login
+App --> Frontend: Render login.html
+
+User -> Frontend: Enter Credentials
+Frontend -> App: POST /login (username, password)
+App -> DB: Query User by Username
+activate DB
+DB --> App: Return User Record
+deactivate DB
+
+alt Valid Credentials
+    App -> App: Verify Password Hash
+    App -> App: Create Session
+    App --> Frontend: Redirect to /home
+    Frontend -> App: GET /home
+    App --> Frontend: Render home.html
+else Invalid Credentials
+    App --> Frontend: Show Error Message
+end
+
+note over User, Model: Disease Detection Phase
+
+User -> Frontend: Upload Leaf Image
+Frontend -> App: POST /predict (image file)
+activate App
+
+App -> App: Validate File Extension
+
+alt Invalid File
+    App --> Frontend: Return Error JSON
+else Valid File
+    App -> App: Save Temp File
+    App -> App: Preprocess Image
+    
+    group Ensemble Prediction
+        App -> Model: Predict (ResNet50)
+        activate Model
+        Model --> App: Probabilities A
+        deactivate Model
+        
+        opt efficientnet_loaded
+            App -> Model: Predict (EfficientNet)
+            activate Model
+            Model --> App: Probabilities B
+            deactivate Model
+            App -> App: Average Probabilities
+        end
+    end
+
+    App -> App: Determine Max Probability Class
+    
+    opt Low Confidence (< 35%)
+        App -> App: Default to 'Healthy Wheat'
+    end
+    
+    App -> App: Calculate Severity & Spread
+    App -> App: Fetch Disease Info & Recommendations
+    
+    App -> DB: INSERT prediction record
+    activate DB
+    DB --> App: Confirm Save
+    deactivate DB
+    
+    App -> App: Cleanup Temp File
+    App --> Frontend: Return JSON (Diagnosis, Confidence, Meds)
+end
+deactivate App
+
+Frontend -> User: Display Analysis Report & Recommendations
+@enduml
